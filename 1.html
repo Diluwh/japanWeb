@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日本語の時間 - Japanese Time Learning</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1a1a1a;
+            color: #FFD700;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .section {
+            background-color: #333;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .clock-display {
+            font-size: 3em;
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #444;
+            border-radius: 8px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        button {
+            background-color: #FFD700;
+            color: #1a1a1a;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        input {
+            padding: 12px;
+            font-size: 1.2em;
+            width: 200px;
+            border-radius: 5px;
+            border: 2px solid #FFD700;
+            background-color: #444;
+            color: #FFD700;
+            text-align: center;
+        }
+
+        .feedback {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 1.2em;
+        }
+
+        .correct { color: #00FF00; }
+        .incorrect { color: #FF0000; }
+
+        h2 {
+            border-bottom: 2px solid #FFD700;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- ඉගෙනීමේ කොටස -->
+        <div class="section">
+            <h2>時間の読み方を学ぶ (වේලාව කියවීම ඉගෙන ගන්න)</h2>
+            <div class="clock-display" id="learning-clock">පැය - JI  මිනිත්තු - fun </div>
+            <div class="controls">
+                <select id="hours" onchange="updateLearningClock()">
+                    <!-- JavaScript මගින් පැය එකතු කරයි -->
+                </select>
+                <select id="minutes" onchange="updateLearningClock()">
+                    <!-- JavaScript මගින් මිනිත්තු එකතු කරයි -->
+                </select>
+            </div>
+            <div class="clock-display" id="japanese-display">三時十五分<br>(さんじ じゅうごふん)</div>
+        </div>
+
+        <!-- පුහුණු කොටස -->
+        <div class="section">
+            <h2>練習する (පුහුණු වන්න)</h2>
+            <div class="clock-display" id="practice-clock">7:45</div>
+            <div class="controls">
+                <input type="text" id="answer" placeholder="Romaji ටයිප් කරන්න">
+                <button onclick="checkAnswer()">පරීක්ෂා කරන්න</button>
+            </div>
+            <div class="feedback" id="feedback"></div>
+            <div class="feedback">Score: <span id="score">0</span></div>
+        </div>
+    </div>
+
+    <script>
+        // පැය සහ මිනිත්තු එකතු කිරීම
+        const hoursSelect = document.getElementById('hours');
+        const minutesSelect = document.getElementById('minutes');
+
+        for(let i=1; i<=12; i++) {
+            hoursSelect.innerHTML += `<option value="${i}">${i}時</option>`;
+        }
+
+        for(let i=0; i<60; i+=5) {
+            minutesSelect.innerHTML += `<option value="${i}">${i}分</option>`;
+        }
+
+        // ජපන් සංඛ්යා පරිවර්තන
+        const numbers = {
+            0: { kanji: '零', romaji: 'zero' },
+            
+    1: { kanji: '一', romaji: 'ichi' },
+    2: { kanji: '二', romaji: 'ni' },
+    3: { kanji: '三', romaji: 'san' },
+    4: { kanji: '四', romaji: 'shi/yon' },
+    5: { kanji: '五', romaji: 'go' },
+    6: { kanji: '六', romaji: 'roku' },
+    7: { kanji: '七', romaji: 'shichi/nana' },
+    8: { kanji: '八', romaji: 'hachi' },
+    9: { kanji: '九', romaji: 'kyuu/ku' },
+    10: { kanji: '十', romaji: 'juu' },
+
+    11: { kanji: '十一', romaji: 'juuichi' },
+    12: { kanji: '十二', romaji: 'juuni' },
+    13: { kanji: '十三', romaji: 'juusan' },
+    14: { kanji: '十四', romaji: 'juushi/juuyon' },
+    15: { kanji: '十五', romaji: 'juugo' },
+    16: { kanji: '十六', romaji: 'juuroku' },
+    17: { kanji: '十七', romaji: 'juushichi/juunana' },
+    18: { kanji: '十八', romaji: 'juuhachi' },
+    19: { kanji: '十九', romaji: 'juukyuu/juuku' },
+    20: { kanji: '二十', romaji: 'nijuu' },
+
+    21: { kanji: '二十一', romaji: 'nijuuichi' },
+    22: { kanji: '二十二', romaji: 'nijuuni' },
+    23: { kanji: '二十三', romaji: 'nijuusan' },
+    24: { kanji: '二十四', romaji: 'nijuushi/nijuuyon' },
+    25: { kanji: '二十五', romaji: 'nijuugo' },
+    26: { kanji: '二十六', romaji: 'nijuuroku' },
+    27: { kanji: '二十七', romaji: 'nijuushichi/nijuunana' },
+    28: { kanji: '二十八', romaji: 'nijuuhachi' },
+    29: { kanji: '二十九', romaji: 'nijuukyuu/nijuuku' },
+    30: { kanji: '三十', romaji: 'sanjuu' },
+
+    31: { kanji: '三十一', romaji: 'sanjuuichi' },
+    32: { kanji: '三十二', romaji: 'sanjuuni' },
+    33: { kanji: '三十三', romaji: 'sanjuusan' },
+    34: { kanji: '三十四', romaji: 'sanjuushi/sanjuuyon' },
+    35: { kanji: '三十五', romaji: 'sanjuugo' },
+    36: { kanji: '三十六', romaji: 'sanjuuroku' },
+    37: { kanji: '三十七', romaji: 'sanjuushichi/sanjuunana' },
+    38: { kanji: '三十八', romaji: 'sanjuuhachi' },
+    39: { kanji: '三十九', romaji: 'sanjuukyuu/sanjuuku' },
+    40: { kanji: '四十', romaji: 'yonjuu' },
+
+    41: { kanji: '四十一', romaji: 'yonjuuichi' },
+    42: { kanji: '四十二', romaji: 'yonjuuni' },
+    43: { kanji: '四十三', romaji: 'yonjuusan' },
+    44: { kanji: '四十四', romaji: 'yonjuushi/yonjuuyon' },
+    45: { kanji: '四十五', romaji: 'yonjuugo' },
+    46: { kanji: '四十六', romaji: 'yonjuuroku' },
+    47: { kanji: '四十七', romaji: 'yonjuushichi/yonjuunana' },
+    48: { kanji: '四十八', romaji: 'yonjuuhachi' },
+    49: { kanji: '四十九', romaji: 'yonjuukyuu/yonjuuku' },
+    50: { kanji: '五十', romaji: 'gojuu' },
+
+    51: { kanji: '五十一', romaji: 'gojuuichi' },
+    52: { kanji: '五十二', romaji: 'gojuuni' },
+    53: { kanji: '五十三', romaji: 'gojuusan' },
+    54: { kanji: '五十四', romaji: 'gojuushi/gojuuyon' },
+    55: { kanji: '五十五', romaji: 'gojuugo' },
+    56: { kanji: '五十六', romaji: 'gojuuroku' },
+    57: { kanji: '五十七', romaji: 'gojuushichi/gojuunana' },
+    58: { kanji: '五十八', romaji: 'gojuuhachi' },
+    59: { kanji: '五十九', romaji: 'gojuukyuu/gojuuku' },
+    60: { kanji: '六十', romaji: 'rokujuu' }
+            // ...අනෙකුත් සංඛ්යා එකතු කරන්න
+        };
+
+        function updateLearningClock() {
+            const hours = hoursSelect.value;
+            const minutes = minutesSelect.value;
+            
+            // Kanji සහ Romaji පරිවර්තන
+            const japaneseTime = `${numbers[hours].kanji}時 ${numbers[minutes].kanji}分`;
+            const romaji = `${numbers[hours].romaji}-ji ${numbers[minutes].romaji}-fun`;
+            
+            document.getElementById('japanese-display').innerHTML = 
+                `${japaneseTime}<br>(${romaji})`;
+        }
+
+        // පුහුණු කොටස් තර්ක
+        let currentPracticeTime = null;
+        let score = 0;
+
+        function generatePracticeQuestion() {
+            const hours = Math.floor(Math.random() * 12) + 1;
+            const minutes = Math.floor(Math.random() * 12) * 5;
+            currentPracticeTime = { hours, minutes };
+            document.getElementById('practice-clock').textContent = `${hours}:${minutes.toString().padStart(2, '0')}`;
+        }
+
+        function checkAnswer() {
+            const userAnswer = document.getElementById('answer').value.toLowerCase();
+            const correctAnswer = `${numbers[currentPracticeTime.hours].romaji}-ji ${numbers[currentPracticeTime.minutes].romaji}-fun`;
+            
+            const feedback = document.getElementById('feedback');
+            if(userAnswer === correctAnswer) {
+                feedback.textContent = "正解です！ (නිවැරදියි!)";
+                feedback.className = 'feedback correct';
+                score++;
+            } else {
+                feedback.textContent = `不正解です。正解は: ${correctAnswer} (වැරදීය. නිවැරදි පිළිතුර: ${correctAnswer})`;
+                feedback.className = 'feedback incorrect';
+            }
+            
+            document.getElementById('score').textContent = score;
+            generatePracticeQuestion();
+            document.getElementById('answer').value = '';
+        }
+
+        // ආරම්භක අවස්ථාව
+        updateLearningClock();
+        generatePracticeQuestion();
+    </script>
+</body>
+</html>

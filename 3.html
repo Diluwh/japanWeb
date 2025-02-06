@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Japanese Romaji Checker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    input, button {
+      font-size: 16px;
+      padding: 10px;
+      margin: 10px;
+    }
+    .result {
+      font-size: 18px;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    .correct {
+      color: green;
+    }
+    .incorrect {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>Japanese Romaji Checker</h1>
+  <p>Type the Romaji for the Japanese word below:</p>
+  <p id="japanese-word">こんにちは</p>
+  <input type="text" id="user-input" placeholder="Type Romaji here">
+  <button onclick="checkRomaji()">Check</button>
+  <button onclick="nextWord()">Next</button>
+  <div id="result" class="result"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

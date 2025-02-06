@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>කතකන ඉගෙන ගමු! | Learn Katakana</title>
+    <style>
+        /* මිලිමීටර 10 සහ වර්ණ ගැලපීම */
+        :root {
+            --primary: #FF6B6B;
+            --secondary: #4ECDC4;
+        }
+
+        body {
+            font-family: 'Mochiy Pop One', sans-serif;
+            background: #f8f9fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .score-board {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .character-card {
+            background: white;
+            padding: 30px;
+            font-size: 120px;
+            text-align: center;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .option-btn {
+            padding: 20px;
+            font-size: 24px;
+            border: none;
+            border-radius: 10px;
+            background: var(--secondary);
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .option-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .correct { background: #77DD77 !important; }
+        .wrong { background: #FF6961 !important; }
+
+        /* ඇනිමේෂන් */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .bounce { animation: bounce 0.5s; }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="score-board">
+            <h2>ලකුණු: <span id="score">0</span></h2>
+        </div>
+
+        <div class="character-card" id="currentChar">ア</div>
+
+        <div class="options-grid" id="optionsContainer"></div>
+    </div>
+
+    <script>
+        const katakanaData = [
+        { char: 'ア', sound: 'a' },
+    { char: 'イ', sound: 'i' },
+    { char: 'ウ', sound: 'u' },
+    { char: 'エ', sound: 'e' },
+    { char: 'オ', sound: 'o' },
+
+    { char: 'カ', sound: 'ka' },
+    { char: 'キ', sound: 'ki' },
+    { char: 'ク', sound: 'ku' },
+    { char: 'ケ', sound: 'ke' },
+    { char: 'コ', sound: 'ko' },
+
+    { char: 'サ', sound: 'sa' },
+    { char: 'シ', sound: 'shi' },
+    { char: 'ス', sound: 'su' },
+    { char: 'セ', sound: 'se' },
+    { char: 'ソ', sound: 'so' },
+
+    { char: 'タ', sound: 'ta' },
+    { char: 'チ', sound: 'chi' },
+    { char: 'ツ', sound: 'tsu' },
+    { char: 'テ', sound: 'te' },
+    { char: 'ト', sound: 'to' },
+
+    { char: 'ナ', sound: 'na' },
+    { char: 'ニ', sound: 'ni' },
+    { char: 'ヌ', sound: 'nu' },
+    { char: 'ネ', sound: 'ne' },
+    { char: 'ノ', sound: 'no' },
+
+    { char: 'ハ', sound: 'ha' },
+    { char: 'ヒ', sound: 'hi' },
+    { char: 'フ', sound: 'fu' },
+    { char: 'ヘ', sound: 'he' },
+    { char: 'ホ', sound: 'ho' },
+
+    { char: 'マ', sound: 'ma' },
+    { char: 'ミ', sound: 'mi' },
+    { char: 'ム', sound: 'mu' },
+    { char: 'メ', sound: 'me' },
+    { char: 'モ', sound: 'mo' },
+
+    { char: 'ヤ', sound: 'ya' },
+    { char: 'ユ', sound: 'yu' },
+    { char: 'ヨ', sound: 'yo' },
+
+    { char: 'ラ', sound: 'ra' },
+    { char: 'リ', sound: 'ri' },
+    { char: 'ル', sound: 'ru' },
+    { char: 'レ', sound: 're' },
+    { char: 'ロ', sound: 'ro' },
+
+    { char: 'ワ', sound: 'wa' },
+    { char: 'ヲ', sound: 'wo' },
+    { char: 'ン', sound: 'n' },
+
+    // Dakuten (゛) variations
+    { char: 'ガ', sound: 'ga' },
+    { char: 'ギ', sound: 'gi' },
+    { char: 'グ', sound: 'gu' },
+    { char: 'ゲ', sound: 'ge' },
+    { char: 'ゴ', sound: 'go' },
+
+    { char: 'ザ', sound: 'za' },
+    { char: 'ジ', sound: 'ji' },
+    { char: 'ズ', sound: 'zu' },
+    { char: 'ゼ', sound: 'ze' },
+    { char: 'ゾ', sound: 'zo' },
+
+    { char: 'ダ', sound: 'da' },
+    { char: 'ヂ', sound: 'ji' },
+    { char: 'ヅ', sound: 'zu' },
+    { char: 'デ', sound: 'de' },
+    { char: 'ド', sound: 'do' },
+
+    { char: 'バ', sound: 'ba' },
+    { char: 'ビ', sound: 'bi' },
+    { char: 'ブ', sound: 'bu' },
+    { char: 'ベ', sound: 'be' },
+    { char: 'ボ', sound: 'bo' },
+
+    // Handakuten (゜) variations
+    { char: 'パ', sound: 'pa' },
+    { char: 'ピ', sound: 'pi' },
+    { char: 'プ', sound: 'pu' },
+    { char: 'ペ', sound: 'pe' },
+    { char: 'ポ', sound: 'po' }
+];
+
+        let currentScore = 0;
+        let currentQuestion = null;
+
+        function generateQuestion() {
+            // අහඹු අක්ෂරයක් තෝරන්න
+            currentQuestion = katakanaData[Math.floor(Math.random() * katakanaData.length)];
+            
+            // විකල්ප ජනනය කරන්න
+            let options = [currentQuestion.sound];
+            while(options.length < 4) {
+                let randomSound = katakanaData[Math.floor(Math.random() * katakanaData.length)].sound;
+                if(!options.includes(randomSound)) options.push(randomSound);
+            }
+            options = options.sort(() => Math.random() - 0.5);
+
+            // UI යාවත්කාලීන කරන්න
+            document.getElementById('currentChar').textContent = currentQuestion.char;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = options.map(opt => `
+                <button class="option-btn" onclick="checkAnswer('${opt}')">${opt}</button>
+            `).join('');
+        }
+
+        function checkAnswer(selectedSound) {
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                if(btn.textContent === currentQuestion.sound) {
+                    btn.classList.add('correct');
+                } else if(btn.textContent === selectedSound) {
+                    btn.classList.add('wrong');
+                }
+            });
+
+            if(selectedSound === currentQuestion.sound) {
+                currentScore += 10;
+                document.getElementById('score').textContent = currentScore;
+                document.getElementById('currentChar').classList.add('bounce');
+            }
+
+            setTimeout(() => {
+                buttons.forEach(btn => {
+                    btn.classList.remove('correct', 'wrong');
+                    btn.disabled = false;
+                });
+                document.getElementById('currentChar').classList.remove('bounce');
+                generateQuestion();
+            }, 1500);
+        }
+
+        // ආරම්භක ප්රශ්නය
+        generateQuestion();
+    </script>
+</body>
+</html>

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Japanese Language Quiz - Vocabulary and Writing</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+        }
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .question {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #e1e4e8;
+            border-radius: 8px;
+        }
+        .question.correct {
+            background-color: #dcffe4;
+            border-color: #28a745;
+        }
+        .question.incorrect {
+            background-color: #ffe0e0;
+            border-color: #dc3545;
+        }
+        .options {
+            display: grid;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .option {
+            padding: 10px 15px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-align: center;
+        }
+        .option:hover {
+            background-color: #e9ecef;
+        }
+        .feedback {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+            text-align: center;
+        }
+        .feedback.correct {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .feedback.incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .nav-buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .nav-button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .nav-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="header">
+            <h1>Japanese Language Quiz - Writing and Vocabulary</h1>
+            <p>Choose the correct Japanese writing for each English word</p>
+        </div>
+
+        <div id="quiz">
+            <!-- Questions will be dynamically inserted here -->
+        </div>
+
+        <div class="nav-buttons">
+            <a href="#" class="nav-button" onclick="resetQuiz()">Reset Quiz</a>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                word: "Teacher",
+                options: ["せんせい", "がくせい", "かいしゃいん"],
+                correct: 0
+            },
+            {
+                word: "Student",
+                options: ["せんせい", "がくせい", "いしゃ"],
+                correct: 1
+            },
+            {
+                word: "Doctor",
+                options: ["けんきょうしゃ", "がくせい", "いしゃ"],
+                correct: 2
+            },
+            {
+                word: "Office Worker",
+                options: ["ぎんこういん", "かいしゃいん", "いしゃ"],
+                correct: 1
+            },
+            {
+                word: "Bank Officer",
+                options: ["ぎんこういん", "かいしゃいん", "けんきょうしゃ"],
+                correct: 0
+            },
+            {
+                word: "Researcher",
+                options: ["いしゃ", "けんきょうしゃ", "せんせい"],
+                correct: 1
+            },
+            {
+                word: "I",
+                options: ["あなた", "わたし", "せんせい"],
+                correct: 1
+            },
+            {
+                word: "You",
+                options: ["わたし", "あなた", "いしゃ"],
+                correct: 1
+            },
+            {
+                word: "Good Evening",
+                options: ["こんにちは", "こんばんは", "おはよう"],
+                correct: 1
+            },
+            {
+                word: "Please",
+                options: ["ありがとう", "すみません", "お願いします"],
+                correct: 2
+            },
+            {
+        word: "Book",
+        options: ["ほん", "じしょ", "ざっし"],
+        correct: 0
+    },
+    {
+        word: "Dictionary",
+        options: ["ほん", "じしょ", "しんぶん"],
+        correct: 1
+    },
+    {
+        word: "Newspaper",
+        options: ["ざっし", "しんぶん", "ノート"],
+        correct: 1
+    },
+    {
+        word: "Notebook",
+        options: ["てちょう", "ノート", "めいし"],
+        correct: 1
+    },
+    {
+        word: "Business Card",
+        options: ["めいし", "カード", "えんぴつ"],
+        correct: 0
+    },
+    {
+        word: "Pencil",
+        options: ["えんぴつ", "ボールペン", "シャプペシル"],
+        correct: 0
+    },
+    {
+        word: "Key",
+        options: ["とけい", "かぎ", "かさ"],
+        correct: 1
+    },
+    {
+        word: "Watch",
+        options: ["かぎ", "とけい", "かばん"],
+        correct: 1
+    },
+    {
+        word: "This",
+        options: ["それ", "これ", "あれ"],
+        correct: 1
+    },
+    {
+        word: "English Language",
+        options: ["にほんご", "えいご", "コーヒー"],
+    }, 
+    {
+        word: "Class Room",
+        options: ["きょうしつ", "しょくどう", "じむしょ"],
+        correct: 0
+    },
+    {
+        word: "Reception Desk",
+        options: ["ロビー", "うけつけ", "へや"],
+        correct: 1
+    },
+    {
+        word: "Lift",
+        options: ["エスカレーター", "エレベーター", "かいだん"],
+        correct: 1
+    },
+    {
+        word: "Phone",
+        options: ["でんわ", "うち", "くつ"],
+        correct: 0
+    },
+    // Lesson 4 Time and Days
+    {
+        word: "Morning",
+        options: ["ひる", "あさ", "ばん"],
+        correct: 1
+    },
+    {
+        word: "Tomorrow",
+        options: ["きのう", "あした", "きょう"],
+        correct: 1
+    },
+    {
+        word: "Monday",
+        options: ["かようび", "げつようび", "すいようび"],
+        correct: 1
+    },
+    {
+        word: "A.M.",
+        options: ["ごせん", "ごご", "はん"],
+        correct: 0
+    },
+    // Lesson 6 Actions and Food
+    {
+        word: "To Eat",
+        options: ["のみます", "たべます", "みます"],
+        correct: 1
+    },
+    {
+        word: "Breakfast",
+        options: ["ばんごはん", "あさごはん", "ひるごはん"],
+        correct: 1
+    },
+    {
+        word: "Water",
+        options: ["みず", "ジュース", "ぎゅうにゅう"],
+        correct: 0
+    },
+    {
+        word: "To Buy",
+        options: ["します", "とります", "かいます"],
+        correct: 2
+    },
+    {
+        word: "Photo",
+        options: ["しゃしん", "てがみ", "レポート"],
+        correct: 0
+    },
+    {
+        word: "Together",
+        options: ["ちょっと", "いっしょに", "いつも"],
+        correct: 1
+    },
+    {
+        word: "Shop",
+        options: ["みせ", "にわ", "しゅくだい"],
+        correct: 0
+    },
+    {
+        word: "Always",
+        options: ["ときどき", "いつも", "それから"],
+        correct: 1
+    }
+   
+        ];
+
+        function createQuiz() {
+            const quizContainer = document.getElementById('quiz');
+            quizContainer.innerHTML = ''; // Clear previous quiz
+            
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.innerHTML = `
+                    <div class="japanese">Question ${index + 1}: What is the Japanese writing for "${q.word}"?</div>
+                    <div class="options">
+                        ${q.options.map((option, i) => `
+                            <div class="option" onclick="checkAnswer(${index}, ${i})">${option}</div>
+                        `).join('')}
+                    </div>
+                    <div class="feedback"></div>
+                `;
+                quizContainer.appendChild(questionDiv);
+            });
+        }
+
+        function checkAnswer(questionIndex, selectedOption) {
+            const questionDiv = document.getElementsByClassName('question')[questionIndex];
+            const feedbackDiv = questionDiv.getElementsByClassName('feedback')[0];
+            const correctAnswer = questions[questionIndex].correct;
+            const options = questionDiv.getElementsByClassName('option');
+
+            // Remove previous feedback
+            questionDiv.classList.remove('correct', 'incorrect');
+            feedbackDiv.style.display = 'block';
+
+            if (selectedOption === correctAnswer) {
+                questionDiv.classList.add('correct');
+                feedbackDiv.className = 'feedback correct';
+                feedbackDiv.textContent = 'Correct! Well done!';
+            } else {
+                questionDiv.classList.add('incorrect');
+                feedbackDiv.className = 'feedback incorrect';
+                feedbackDiv.textContent = `Incorrect. The correct answer is: ${questions[questionIndex].options[correctAnswer]}`;
+            }
+
+            // Disable further clicking
+            Array.from(options).forEach(option => {
+                option.style.pointerEvents = 'none';
+            });
+        }
+
+        function resetQuiz() {
+            createQuiz();
+        }
+
+        // Initialize quiz when page loads
+        window.onload = createQuiz;
+    </script>
+</body>
+</html>

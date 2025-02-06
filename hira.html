@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiragana Practice with Levels</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #ff4757;
+            color: white;
+            padding: 1em;
+            font-size: 1.5em;
+        }
+
+        .hiragana {
+            font-size: 4em;
+            margin: 20px 0;
+            color: #2f3542;
+        }
+
+        .input-section {
+            margin: 20px 0;
+        }
+
+        input[type="text"] {
+            font-size: 1.2em;
+            padding: 10px;
+            width: 300px;
+            border: 2px solid #ced6e0;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #1e90ff;
+        }
+
+        button {
+            font-size: 1em;
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            background-color: #1e90ff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #3742fa;
+        }
+
+        .feedback {
+            font-size: 1.2em;
+            margin: 20px 0;
+            color: #2f3542;
+        }
+
+        .score {
+            font-size: 1em;
+            margin: 10px 0;
+            color: #57606f;
+        }
+
+        .level-section {
+            margin: 20px 0;
+        }
+
+        select {
+            font-size: 1.2em;
+            padding: 10px;
+            border: 2px solid #ced6e0;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        footer {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #ced6e0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        Hiragana Practice with Levels
+    </header>
+
+    <div class="level-section">
+        <label for="levelSelect">Choose Level: </label>
+        <select id="levelSelect" onchange="changeLevel()">
+            <option value="1">Level 1</option>
+            <option value="2">Level 2</option>
+            <option value="3">Level 3</option>
+        </select>
+    </div>
+
+    <div class="hiragana" id="hiragana">あ</div>
+
+    <div class="input-section">
+        <input type="text" id="userInput" placeholder="Enter the romaji here...">
+        <button onclick="checkAnswer()">Submit</button>
+        <button onclick="nextHiragana()">Next</button>
+    </div>
+
+    <div class="feedback" id="feedback">Type your answer and press Submit!</div>
+
+    <div class="score" id="score">Score: 0</div>
+
+    <footer>
+        Created by Dilusha to learn Japanese Hiragana! 🇯🇵
+    </footer>
+
+    <script>
+        const level1 = [
+        { character: 'あ', romaji: 'a' },
+             { character: 'い', romaji: 'i' },
+             { character: 'う', romaji: 'u' },
+             { character: 'え', romaji: 'e' },
+            { character: 'お', romaji: 'o' },
+             { character: 'か', romaji: 'ka' },
+            { character: 'き', romaji: 'ki' },
+    { character: 'く', romaji: 'ku' },
+    { character: 'け', romaji: 'ke' },
+    { character: 'こ', romaji: 'ko' },
+    { character: 'さ', romaji: 'sa' },
+    { character: 'し', romaji: 'shi' },
+    { character: 'す', romaji: 'su' },
+    { character: 'せ', romaji: 'se' },
+    { character: 'そ', romaji: 'so' },
+    { character: 'た', romaji: 'ta' },
+    { character: 'ち', romaji: 'chi' },
+    { character: 'つ', romaji: 'tsu' },
+    { character: 'て', romaji: 'te' },
+    { character: 'と', romaji: 'to' },
+    { character: 'な', romaji: 'na' },
+    { character: 'に', romaji: 'ni' },
+    { character: 'ぬ', romaji: 'nu' },
+    { character: 'ね', romaji: 'ne' },
+    { character: 'の', romaji: 'no' },
+    { character: 'は', romaji: 'ha' },
+    { character: 'ひ', romaji: 'hi' },
+    { character: 'ふ', romaji: 'fu' },
+    { character: 'へ', romaji: 'he' },
+    { character: 'ほ', romaji: 'ho' },
+    { character: 'ま', romaji: 'ma' },
+    { character: 'み', romaji: 'mi' },
+    { character: 'む', romaji: 'mu' },
+    { character: 'め', romaji: 'me' },
+    { character: 'も', romaji: 'mo' },
+    { character: 'や', romaji: 'ya' },
+    { character: 'ゆ', romaji: 'yu' },
+    { character: 'よ', romaji: 'yo' },
+    { character: 'ら', romaji: 'ra' },
+    { character: 'り', romaji: 'ri' },
+    { character: 'る', romaji: 'ru' },
+    { character: 'れ', romaji: 're' },
+    { character: 'ろ', romaji: 'ro' },
+    { character: 'わ', romaji: 'wa' },
+    { character: 'を', romaji: 'wo' },
+    { character: 'ん', romaji: 'n' },
+        ];
+
+        const level2 = [
+        { character: 'が', romaji: 'ga' },
+    { character: 'ぎ', romaji: 'gi' },
+    { character: 'ぐ', romaji: 'gu' },
+    { character: 'げ', romaji: 'ge' },
+    { character: 'ご', romaji: 'go' },
+
+    { character: 'ざ', romaji: 'za' },
+    { character: 'じ', romaji: 'ji' },
+    { character: 'ず', romaji: 'zu' },
+    { character: 'ぜ', romaji: 'ze' },
+    { character: 'ぞ', romaji: 'zo' },
+
+    { character: 'だ', romaji: 'da' },
+    { character: 'ぢ', romaji: 'ji' },
+    { character: 'づ', romaji: 'zu' },
+    { character: 'で', romaji: 'de' },
+    { character: 'ど', romaji: 'do' },
+
+    { character: 'ば', romaji: 'ba' },
+    { character: 'び', romaji: 'bi' },
+    { character: 'ぶ', romaji: 'bu' },
+    { character: 'べ', romaji: 'be' },
+    { character: 'ぼ', romaji: 'bo' },
+
+    { character: 'ぱ', romaji: 'pa' },
+    { character: 'ぴ', romaji: 'pi' },
+    { character: 'ぷ', romaji: 'pu' },
+    { character: 'ぺ', romaji: 'pe' },
+    { character: 'ぽ', romaji: 'po' },
+        ];
+
+        const level3 = [
+            // まる (Maru sounds)
+    { character: 'ぁ', romaji: 'a' },
+    { character: 'ぃ', romaji: 'i' },
+    { character: 'ぅ', romaji: 'u' },
+    { character: 'ぇ', romaji: 'e' },
+    { character: 'ぉ', romaji: 'o' },
+
+    // Extended vowels and long sounds
+    { character: 'あー', romaji: 'aa' },
+    { character: 'いー', romaji: 'ii' },
+    { character: 'うー', romaji: 'uu' },
+    { character: 'えー', romaji: 'ee' },
+    { character: 'おー', romaji: 'oo' },
+
+    // Long vowel markers (ー)
+    { character: 'かー', romaji: 'kaa' },
+    { character: 'きー', romaji: 'kii' },
+    { character: 'くー', romaji: 'kuu' },
+    { character: 'けー', romaji: 'kee' },
+    { character: 'こー', romaji: 'koo' }
+        ];
+
+        let currentLevel = level1;
+        let currentHiragana = {};
+        let score = 0;
+
+        function randomHiragana() {
+            const randomIndex = Math.floor(Math.random() * currentLevel.length);
+            return currentLevel[randomIndex];
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = `Score: ${score}`;
+        }
+
+        function checkAnswer() {
+            const userInput = document.getElementById('userInput').value.trim().toLowerCase();
+
+            if (userInput === currentHiragana.romaji) {
+                document.getElementById('feedback').textContent = '✅ Correct!';
+                document.getElementById('feedback').style.color = 'green';
+                score++;
+            } else {
+                document.getElementById('feedback').textContent = `❌ Incorrect! Correct answer: ${currentHiragana.romaji}`;
+                document.getElementById('feedback').style.color = 'red';
+            }
+
+            updateScore();
+        }
+
+        function nextHiragana() {
+            currentHiragana = randomHiragana();
+            document.getElementById('hiragana').textContent = currentHiragana.character;
+            document.getElementById('userInput').value = '';
+            document.getElementById('feedback').textContent = 'Type your answer and press Submit!';
+            document.getElementById('feedback').style.color = '#2f3542';
+        }
+
+        function changeLevel() {
+            const levelSelect = document.getElementById('levelSelect').value;
+            if (levelSelect === '1') {
+                currentLevel = level1;
+            } else if (levelSelect === '2') {
+                currentLevel = level2;
+            } else if (levelSelect === '3') {
+                currentLevel = level3;
+            }
+            nextHiragana();
+        }
+
+        // Initialize first hiragana
+        nextHiragana();
+    </script>
+</body>
+</html>

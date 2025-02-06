@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time in Hours</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            text-align: center;
+        }
+        header {
+            background-color: #ff6f61;
+            color: white;
+            padding: 20px;
+            font-size: 2em;
+        }
+        main {
+            margin: 20px auto;
+            max-width: 600px;
+        }
+        .time {
+            font-size: 2em;
+            margin: 20px 0;
+        }
+        .question {
+            font-size: 1.5em;
+            margin: 20px 0;
+        }
+        .input {
+            margin: 20px 0;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 1em;
+            width: 80%;
+            max-width: 300px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            margin-top: 10px;
+            background-color: #ff6f61;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #e55b50;
+        }
+        .result {
+            font-size: 1.2em;
+            margin: 20px 0;
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+    <script>
+        let correctAnswer = "";
+
+        function generateTime() {
+            const hours = Math.floor(Math.random() * 12) + 1;
+            const japaneseHours = ["ichi ji", "ni ji", "san ji", "yo ji", "go ji", "roku ji", "shichi ji", "hachi ji", "ku ji", "jyu_ ji", "jyu_ichi ji", "jyu_ni ji"];
+            document.getElementById("time").innerText = `${hours}:00`;
+            correctAnswer = japaneseHours[hours - 1];
+        }
+
+        function checkAnswer() {
+            const userAnswer = document.getElementById("answer").value.trim();
+            const result = document.getElementById("result");
+            if (userAnswer === correctAnswer) {
+                result.innerHTML = "<span class='result'>Correct! 🎉</span>";
+            } else {
+                result.innerHTML = `<span class='error'>Incorrect. The correct answer is: ${correctAnswer}</span>`;
+            }
+        }
+
+        function nextQuestion() {
+            document.getElementById("answer").value = "";
+            document.getElementById("result").innerHTML = "";
+            generateTime();
+        }
+
+        window.onload = generateTime;
+    </script>
+</head>
+<body>
+    <header>Time in Japanese</header>
+    <main>
+        <div class="time" id="time">--:--</div>
+        <div class="question">いま なんじ ですか ?</div>
+        <div class="input">
+            <input type="text" id="answer" placeholder="Type your answer here...">
+            <button onclick="checkAnswer()">Submit</button>
+        </div>
+        <div id="result"></div>
+        <button onclick="nextQuestion()">Next Question</button>
+    </main>
+</body>
+</html>

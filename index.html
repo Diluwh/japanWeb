@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Japanese Learning</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        header {
+            background-color: #ff6f61;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            font-size: 2em;
+        }
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 50px auto;
+            max-width: 600px;
+            text-align: center;
+        }
+        .option {
+            background-color: white;
+            border: 2px solid #ff6f61;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .option:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+        }
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #888;
+            font-size: 0.9em;
+        }
+    </style>
+    <script>
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+    </script>
+</head>
+<body>
+    <header>Welcome to Japanese Learning</header>
+    <main>
+        <div class="option" onclick="navigateTo('1.html')">
+            🕒 Learn about Time
+        </div>
+        <div class="option" onclick="navigateTo('wors.html')">
+            📝 Master Japanese Words
+        </div>
+        <div class="option" onclick="navigateTo('3.html')">
+            🎌 Japanese Character Reading
+        </div>
+        <div class="option" onclick="navigateTo('kat.html')">
+             Kathagana Alphabet
+        </div>
+        <div class="option" onclick="navigateTo('hira.html')">
+             Hiragana Alphabet
+        </div>
+    </main>
+    <footer>
+        Created by Dilush with ❤️ for Japanese Learners
+    </footer>
+</body>
+</html>
