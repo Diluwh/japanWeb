@@ -1,42 +1,429 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Japanese Romaji Checker</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
-    }
-    input, button {
-      font-size: 16px;
-      padding: 10px;
-      margin: 10px;
-    }
-    .result {
-      font-size: 18px;
-      margin-top: 20px;
-      font-weight: bold;
-    }
-    .correct {
-      color: green;
-    }
-    .incorrect {
-      color: red;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanji Practice & Quiz</title>
+    <style>
+        :root {
+            --primary-color: #bb86fc;
+            --background-color: #121212;
+            --surface-color: #1e1e1e;
+            --on-surface-color: #e1e1e1;
+            --error-color: #cf6679;
+            --success-color: #03dac6;
+            --secondary-color: #03dac6;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: var(--background-color);
+            color: var(--on-surface-color);
+            line-height: 1.6;
+            margin: 0;
+            transition: all 0.3s ease;
+        }
+        
+        h1, h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .container {
+            margin: 20px auto;
+            max-width: 800px;
+            padding: 20px;
+        }
+        
+        .app-container {
+            background-color: var(--surface-color);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            background-color: var(--primary-color);
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            margin: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+        }
+        
+        .kanji-box {
+            font-size: 60px;
+            margin: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: var(--surface-color);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s;
+        }
+        
+        .kanji-card {
+            display: inline-block;
+            width: 100px;
+            margin: 10px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .kanji-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .kanji-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .kanji-character {
+            font-size: 36px;
+            margin-bottom: 5px;
+        }
+        
+        .kanji-details {
+            font-size: 14px;
+        }
+        
+        .input-field {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--primary-color);
+            color: var(--on-surface-color);
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 18px;
+            margin: 10px;
+            width: 200px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .feedback {
+            font-size: 18px;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        
+        .success {
+            color: var(--success-color);
+        }
+        
+        .error {
+            color: var(--error-color);
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .nav-tab {
+            padding: 10px 20px;
+            background-color: transparent;
+            border: none;
+            color: var(--on-surface-color);
+            cursor: pointer;
+            font-weight: bold;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .nav-tab.active {
+            border-bottom: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        /* Light theme */
+        body.light-theme {
+            --primary-color: #6200ee;
+            --background-color: #f5f5f5;
+            --surface-color: #ffffff;
+            --on-surface-color: #121212;
+            --error-color: #b00020;
+            --success-color: #018786;
+            --secondary-color: #03dac5;
+        }
+    </style>
 </head>
 <body>
-  <h1>Japanese Romaji Checker</h1>
-  <p>Type the Romaji for the Japanese word below:</p>
-  <p id="japanese-word">こんにちは</p>
-  <input type="text" id="user-input" placeholder="Type Romaji here">
-  <button onclick="checkRomaji()">Check</button>
-  <button onclick="nextWord()">Next</button>
-  <div id="result" class="result"></div>
+    <button class="theme-toggle" onclick="toggleTheme()">🌓 Toggle Theme</button>
+    
+    <div class="container">
+        <h1>Kanji Practice & Quiz</h1>
+        
+        <div class="nav-tabs">
+            <button id="practice-tab" class="nav-tab active" onclick="showTab('practice')">Practice</button>
+            <button id="all-kanji-tab" class="nav-tab" onclick="showTab('all-kanji')">All Kanji</button>
+            <button id="quiz-tab" class="nav-tab" onclick="showTab('quiz')">Quiz</button>
+        </div>
+        
+        <div id="practice-section" class="app-container">
+            <h2>Practice Kanji</h2>
+            <div class="progress-bar">
+                <div id="practice-progress" class="progress"></div>
+            </div>
+            <div id="kanji-display" class="kanji-box fade-in"></div>
+            <p id="romaji-display" class="fade-in"></p>
+            <p id="number-display" class="fade-in"></p>
+            <button class="btn" onclick="previousKanji()">Previous</button>
+            <button class="btn btn-secondary" onclick="nextKanji()">Next</button>
+        </div>
+        
+        <div id="all-kanji-section" class="app-container hidden">
+            <h2>All Kanji 1-10</h2>
+            <div id="kanji-grid" class="kanji-grid"></div>
+        </div>
+        
+        <div id="quiz-section" class="app-container hidden">
+            <h2>Kanji Quiz</h2>
+            <div id="quiz-kanji" class="kanji-box fade-in"></div>
+            <input type="text" id="user-input" class="input-field" placeholder="Enter Number">
+            <button class="btn btn-secondary" onclick="checkAnswer()">Submit</button>
+            <p id="feedback" class="feedback"></p>
+            <p id="score-display">Score: 0/0</p>
+        </div>
+    </div>
+    
+    <script>
+        const kanjiData = [
+            { kanji: "一", romaji: "ichi", number: "1" },
+            { kanji: "二", romaji: "ni", number: "2" },
+            { kanji: "三", romaji: "san", number: "3" },
+            { kanji: "四", romaji: "shi / yon", number: "4" },
+            { kanji: "五", romaji: "go", number: "5" },
+            { kanji: "六", romaji: "roku", number: "6" },
+            { kanji: "七", romaji: "shichi / nana", number: "7" },
+            { kanji: "八", romaji: "hachi", number: "8" },
+            { kanji: "九", romaji: "kyuu / ku", number: "9" },
+            { kanji: "十", romaji: "juu", number: "10" },
+            { kanji: "日曜日", romaji: "nichi", number: "sunday" },    // Sunday (ඉරිදා)
+  { kanji: "月曜日", romaji: "getsu", number: "monday" },    // Monday (සඳුදා)
+  { kanji: "火曜日", romaji: "ka",    number: "tuesday" },    // Tuesday (අඟහරුවාදා)
+  { kanji: "水曜日", romaji: "sui",   number: "wednesday" },    // Wednesday (බදාදා)
+  { kanji: "木曜日", romaji: "moku",  number: "thursday " },    // Thursday (බ්රහස්පතින්දා)
+  { kanji: "金曜日", romaji: "kin",   number: "friday" },    // Friday (සිකුරාදා)
+  { kanji: "土曜日", romaji: "do",    number: "saturday" },   // Saturday (සෙනසුරාදා)
+  { kanji: "上", romaji: "ue",     number: "up" },   // උඩ (Up)
+  { kanji: "下", romaji: "shita",  number: "down" },   // යට (Down)
+  { kanji: "中", romaji: "naka",   number: "inside" },   // ඇතුල (Inside)
+  { kanji: "右", romaji: "migi",   number: "right" },   // දකුණ (Right)
+  { kanji: "左", romaji: "hidari", number: "left" },   // වම (Left)
+  { kanji: "山", romaji: "yama",   number: "mountain" },   // කන්ද (Mountain)
+  { kanji: "川", romaji: "kawa",   number: "river" },   // ගග (River)
+  { kanji: "本", romaji: "hon",    number: "book" },   // පොත (Book)
+  { kanji: "日本", romaji: "Nihon", number: "japan" },  // ජපානය (Japan)
+  { kanji: "男", romaji: "otoko",  number: "man" },  // පිරිමියා (Man)
+  { kanji: "女", romaji: "onna",   number: "woman" },  // ගැහැනිය (Woman)
+  { kanji: "母", romaji: "okaasan", number: "mother" }, // අම්මා (Mother)
+  { kanji: "父", romaji: "otousan", number: "father" }, // තාත්තා (Father)
+  { kanji: "先生", romaji: "sensei", number: "teacher" }, // ගුරුවරයා (Teacher)
+  { kanji: "車", romaji: "kuruma", number: "car" }   // කාරය (Car)
+        ];
 
-  <script src="script.js"></script>
+        let currentIndex = 0;
+        let quizIndex = 0;
+        let quizScore = 0;
+        let quizTotal = 0;
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            showTab('practice');
+            populateAllKanji();
+            nextKanji();
+        });
+        
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+        }
+        
+        function showTab(tabName) {
+            // Hide all sections
+            document.getElementById('practice-section').classList.add('hidden');
+            document.getElementById('all-kanji-section').classList.add('hidden');
+            document.getElementById('quiz-section').classList.add('hidden');
+            
+            // Remove active class from all tabs
+            document.getElementById('practice-tab').classList.remove('active');
+            document.getElementById('all-kanji-tab').classList.remove('active');
+            document.getElementById('quiz-tab').classList.remove('active');
+            
+            // Show selected section and activate tab
+            document.getElementById(tabName + '-section').classList.remove('hidden');
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // If quiz tab, start a new quiz
+            if (tabName === 'quiz') {
+                startQuiz();
+            }
+        }
+        
+        function populateAllKanji() {
+            const grid = document.getElementById('kanji-grid');
+            grid.innerHTML = '';
+            
+            kanjiData.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'kanji-card';
+                card.innerHTML = `
+                    <div class="kanji-character">${item.kanji}</div>
+                    <div class="kanji-details">${item.number}</div>
+                    <div class="kanji-details">${item.romaji}</div>
+                `;
+                card.addEventListener('click', () => {
+                    currentIndex = index;
+                    showTab('practice');
+                    updatePracticeDisplay();
+                });
+                grid.appendChild(card);
+            });
+        }
+        
+        function updatePracticeDisplay() {
+            const item = kanjiData[currentIndex];
+            
+            // Add fade-in effect
+            const kanjiDisplay = document.getElementById('kanji-display');
+            const romajiDisplay = document.getElementById('romaji-display');
+            const numberDisplay = document.getElementById('number-display');
+            
+            kanjiDisplay.classList.remove('fade-in');
+            romajiDisplay.classList.remove('fade-in');
+            numberDisplay.classList.remove('fade-in');
+            
+            // Trigger reflow
+            void kanjiDisplay.offsetWidth;
+            
+            kanjiDisplay.classList.add('fade-in');
+            romajiDisplay.classList.add('fade-in');
+            numberDisplay.classList.add('fade-in');
+            
+            kanjiDisplay.innerText = item.kanji;
+            romajiDisplay.innerText = `Reading: ${item.romaji}`;
+            numberDisplay.innerText = `Number: ${item.number}`;
+            
+            // Update progress bar
+            const progress = ((currentIndex) / kanjiData.length) * 100;
+            document.getElementById('practice-progress').style.width = `${progress}%`;
+        }
+        
+        function nextKanji() {
+            if (currentIndex >= kanjiData.length - 1) {
+                currentIndex = 0;
+            } else {
+                currentIndex++;
+            }
+            updatePracticeDisplay();
+        }
+        
+        function previousKanji() {
+            if (currentIndex <= 0) {
+                currentIndex = kanjiData.length - 1;
+            } else {
+                currentIndex--;
+            }
+            updatePracticeDisplay();
+        }
+        
+        function startQuiz() {
+            quizIndex = Math.floor(Math.random() * kanjiData.length);
+            document.getElementById('quiz-kanji').innerText = kanjiData[quizIndex].kanji;
+            document.getElementById('feedback').innerText = '';
+            document.getElementById('user-input').value = '';
+            document.getElementById('user-input').focus();
+        }
+        
+        function checkAnswer() {
+            let userAnswer = document.getElementById('user-input').value.trim();
+            const feedback = document.getElementById('feedback');
+            
+            quizTotal++;
+            if (userAnswer === kanjiData[quizIndex].number) {
+                quizScore++;
+                feedback.innerText = "Correct! 🎉";
+                feedback.className = "feedback success";
+                setTimeout(startQuiz, 1000);
+            } else {
+                feedback.innerText = `Wrong! The correct answer is ${kanjiData[quizIndex].number}`;
+                feedback.className = "feedback error";
+                setTimeout(startQuiz, 2000);
+            }
+            
+            document.getElementById('score-display').innerText = `Score: ${quizScore}/${quizTotal}`;
+        }
+        
+        // Enable Enter key for quiz submission
+        document.getElementById('user-input').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+    </script>
 </body>
 </html>
